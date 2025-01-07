@@ -12,6 +12,9 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      borderRadius: {
+        'custom-radius': '0 1000px 0 1000px / 0 180px 0 180px',
+      },
     },
   },
   plugins: [],
