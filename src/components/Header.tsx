@@ -4,23 +4,16 @@ import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faReact, faPython } from '@fortawesome/free-brands-svg-icons';
 import { faCode } from '@fortawesome/free-solid-svg-icons';
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 export const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const handleScroll = () => {
-    const scrollPosition = window.scrollY;
-    const windowHeight = window.innerHeight;
-    const documentHeight = document.documentElement.scrollHeight;
-    const scrollProgress = (scrollPosition / (documentHeight - windowHeight)) * 100;
-    setScrollProgress(scrollProgress);
-    setIsScrolled(scrollPosition > 50);
-  };
-
   useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -37,141 +30,120 @@ export const Header = () => {
     }
   };
 
-  const headerVariants = {
-    initial: { y: -100 },
-    animate: { y: 0, transition: { type: "spring", stiffness: 100 } },
-  };
-
-  const navItemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        delay: i * 0.1,
-        duration: 0.5,
-      },
-    }),
-  };
-
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <motion.header
-        variants={headerVariants}
-        initial="initial"
-        animate="animate"
-        className={`
-          bg-gray-500/95 backdrop-blur-sm
-          flex flex-col items-center 
-          py-4 md:py-6 
-          transition-all duration-300 
-          ${isScrolled ? 'sticky top-0 z-50 shadow-xl' : 'relative shadow-md'}
-        `}
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ 
+          y: 0, 
+          opacity: 1,
+          transition: { 
+            type: "spring", 
+            stiffness: 100,
+            damping: 20
+          }
+        }}
+        className="fixed top-0 w-full z-50 bg-gradient-to-r from-gray-600 via-gray-500 to-gray-600 shadow-lg backdrop-blur-lg"
       >
-        {/* Barra de progreso */}
-        <motion.div 
-          initial={{ width: 0 }}
-          animate={{ width: `${scrollProgress}%` }}
-          className="absolute bottom-0 left-0 h-1 bg-blue-400"
-        />
-        
-        {/* Nombre y título */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center"
-        >
-          <motion.h1 
-            className={`
-              text-white font-bold
-              transition-all duration-300 
-              ${isScrolled ? 'text-xl md:text-2xl' : 'text-2xl md:text-3xl'}
-            `}
-          >
-            Jhonny Alejandro Henao
-          </motion.h1>
-          
-          <motion.p 
-            className={`
-              text-gray-200 mt-2
-              transition-all duration-300 
-              ${isScrolled ? 'text-sm' : 'text-base md:text-lg'}
-            `}
-          >
-            Desarrollador Web | Backend
-          </motion.p>
-        </motion.div>
+        <div className="max-w-7xl mx-auto px-4 w-full py-4">
+          <div className="flex flex-col md:flex-row items-center justify-between">
+            {/* Título y subtítulo */}
+            <motion.div className="text-center md:text-left">
+              <motion.h1 
+                whileHover={{ scale: 1.05 }}
+                className="text-white font-bold text-2xl md:text-3xl"
+              >
+                Jhonny Alejandro Henao
+              </motion.h1>
+              
+              <motion.div className="text-gray-100 mt-1 text-base md:text-lg">
+                Desarrollador Web 
+              </motion.div>
+            </motion.div>
 
-        {/* Menú hamburguesa para móvil */}
-        <button
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="md:hidden absolute right-4 top-4 text-white p-2"
-        >
-          <div className="w-6 h-0.5 bg-white mb-1.5"></div>
-          <div className="w-6 h-0.5 bg-white mb-1.5"></div>
-          <div className="w-6 h-0.5 bg-white"></div>
-        </button>
+            {/* Menú hamburguesa - solo visible en móvil */}
+            <motion.button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="md:hidden mt-4 text-white p-2"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <motion.div 
+                className="w-6 h-0.5 bg-white mb-1.5 transition-transform"
+                animate={{ 
+                  rotate: isMenuOpen ? 45 : 0,
+                  y: isMenuOpen ? 6 : 0
+                }}
+              />
+              <motion.div 
+                className="w-6 h-0.5 bg-white mb-1.5 transition-opacity"
+                animate={{ opacity: isMenuOpen ? 0 : 1 }}
+              />
+              <motion.div 
+                className="w-6 h-0.5 bg-white transition-transform"
+                animate={{ 
+                  rotate: isMenuOpen ? -45 : 0,
+                  y: isMenuOpen ? -6 : 0
+                }}
+              />
+            </motion.button>
 
-        {/* Navegación */}
-        <AnimatePresence>
-          <motion.nav 
-            className={`
+            {/* Navegación */}
+            <nav className={`
               ${isMenuOpen ? 'flex' : 'hidden md:flex'}
               flex-col md:flex-row 
-              gap-4 md:gap-6 
-              mt-4 md:mt-6
+              gap-4
+              mt-4 md:mt-0
               w-full md:w-auto
               items-center
-            `}
-          >
-            {['inicio', 'proyectos', 'contacto'].map((section, i) => (
-              <motion.a
-                key={section}
-                custom={i}
-                variants={navItemVariants}
-                initial="hidden"
-                animate="visible"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToSection(section);
-                }}
-                className={`
-                  bg-gray-600 
-                  hover:bg-white hover:text-gray-600 
-                  text-white font-medium 
-                  py-2 px-6 
-                  rounded-lg 
-                  focus:outline-none 
-                  focus:ring-2 
-                  focus:ring-gray-400 
-                  transition-all 
-                  duration-300
-                  w-[80%] md:w-auto
-                  text-center
-                  ${isScrolled ? 'text-sm' : 'text-base'}
-                `}
-              >
-                {section.charAt(0).toUpperCase() + section.slice(1)}
-              </motion.a>
-            ))}
-          </motion.nav>
-        </AnimatePresence>
+            `}>
+              {['inicio', 'proyectos', 'contacto'].map((section) => (
+                <motion.button
+                  key={section}
+                  onClick={() => scrollToSection(section)}
+                  className="
+                    bg-gradient-to-r from-gray-700 to-gray-800
+                    hover:from-gray-800 hover:to-gray-900
+                    text-gray-100
+                    font-medium 
+                    py-2 px-6
+                    rounded-lg 
+                    focus:outline-none 
+                    focus:ring-2 
+                    focus:ring-gray-400 
+                    transition-all 
+                    duration-300
+                    w-full md:w-auto
+                    text-center
+                    shadow-lg
+                    border border-gray-600/30
+                  "
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {section.charAt(0).toUpperCase() + section.slice(1)}
+                </motion.button>
+              ))}
+            </nav>
+          </div>
+        </div>
       </motion.header>
 
-      {/* Sección de inicio */}
+      {/* Espacio para compensar el header fijo */}
+      <div className="mt-32" />
+
+      {/* Resto del contenido igual */}
       <motion.section
         id="inicio"
         className="bg-white shadow-lg rounded-2xl p-4 md:p-8 max-w-7xl mx-auto my-6 md:my-10 mt-16 md:mt-24"
       >
+        {/* ... resto del contenido igual ... */}
         <motion.div
           className="grid md:grid-cols-[3fr_1fr] gap-4 md:gap-6 items-center"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          {/* Texto principal */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -184,18 +156,17 @@ export const Header = () => {
             >
               Bienvenidos a mi portafolio
             </motion.h2>
-            <motion.p className="text-base md:text-lg text-gray-800 leading-relaxed mb-4 md:mb-6">
+            <div className="text-base md:text-lg text-gray-800 leading-relaxed mb-4 md:mb-6">
               Soy Tecnólogo en Análisis y Desarrollo de Software, graduado del
               SENA (Servicio Nacional de Aprendizaje), con experiencia en
               desarrollo full-stack.
-            </motion.p>
-            <motion.p className="text-base md:text-lg text-gray-800 leading-relaxed">
+            </div>
+            <div className="text-base md:text-lg text-gray-800 leading-relaxed">
               Poseo dominio en tecnologías modernas como React, Python y Next.js,
               especializado en construir soluciones escalables.
-            </motion.p>
+            </div>
           </motion.div>
 
-          {/* Tecnologías */}
           <motion.div
             className="flex flex-col items-center space-y-4 md:space-y-6 mt-6 md:mt-0"
             initial={{ opacity: 0, x: 50 }}

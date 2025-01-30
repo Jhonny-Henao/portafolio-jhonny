@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import ModalMundiHuellas from "@/components/ModalMundiHuellas";
 import ModalCrmCobro from '@/components/ModalCrmCobro';
 import ModalHaulerPro from "@/components/ModalHaulerPro";
@@ -10,9 +10,6 @@ export const Proyectos: React.FC = () => {
   const [isModalMundiHuellas, setIsModalMundiHuellas] = useState(false);
   const [isModalCrmCobro, setIsModalCrmCobro] = useState(false);
   const [isModalHaulerPro, setIsModalHaulerPro] = useState(false);
-  
-  const { scrollYProgress } = useScroll();
-  const opacity = useTransform(scrollYProgress, [0, 0.3], [0, 1]);
 
   const projectVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -73,11 +70,29 @@ export const Proyectos: React.FC = () => {
     }
   ];
 
+  const deployedProjects = [
+    {
+      title: "Movie App",
+      description: "Aplicación web de películas que permite a los usuarios explorar un catálogo extenso de películas, ver detalles, calificaciones y descripciones. Desarrollada con Next.js y la API de TMDB, ofrece una experiencia fluida y moderna para los amantes del cine.",
+      image: "/img/movie-app.png",
+      imageWidth: "400px",
+      technologies: ["Next.js", "React", "Tailwind CSS"],
+      link: "https://movie-app-git-main-jhonny-henaos-projects.vercel.app/page?page=1"
+    },
+    {
+      title: "Cubatas Licorera",
+      description: "Plataforma de e-commerce para una licorera, que permite a los usuarios explorar un catálogo de bebidas, ver detalles de productos y realizar pedidos. Diseñada con una interfaz moderna y amigable para mejorar la experiencia de compra online.",
+      image: "/img/cubatas.png",
+      imageWidth: "400px",
+      technologies: ["Next.js", "React", "Tailwind CSS"],
+      link: "https://cubatas-licorera.vercel.app/"
+    }
+  ];
+
   return (
-    <motion.div 
+    <div 
       id="proyectos" 
       className="min-h-screen bg-gradient-to-b from-gray-400 to-gray-500 py-12"
-      style={{ opacity }}
     >
       <motion.h1 
         className="text-4xl font-bold text-white text-center mb-12"
@@ -163,10 +178,99 @@ export const Proyectos: React.FC = () => {
         ))}
       </div>
 
+      {/* Sección de proyectos desplegados */}
+      <div className="max-w-7xl mx-auto mt-12">
+        <motion.h2 
+          className="text-3xl font-bold text-white text-center mb-8"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          Proyectos Desplegados
+        </motion.h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4">
+          {deployedProjects.map((project, index) => (
+            <motion.div
+              key={project.title}
+              custom={index}
+              variants={projectVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300"
+            >
+              <motion.h2 
+                className="text-2xl font-bold text-gray-800 mb-4"
+                whileHover={{ scale: 1.02 }}
+              >
+                {project.title}
+              </motion.h2>
+
+              <motion.div 
+                className="bg-gray-50 p-4 rounded-xl mb-6"
+                whileHover={{ scale: 1.01 }}
+              >
+                <p className="text-gray-700 text-base">
+                  {project.description}
+                </p>
+              </motion.div>
+
+              <motion.div 
+                className="flex justify-center mb-6"
+                variants={imageVariants}
+                whileHover="hover"
+              >
+                <div 
+                  className="rounded-lg overflow-hidden"
+                  style={{ width: project.imageWidth }}
+                >
+                  <motion.img 
+                    src={project.image}
+                    alt={`Screenshot ${project.title}`}
+                    className="w-full h-full object-cover"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </div>
+              </motion.div>
+
+              <motion.div 
+                className="bg-gray-50 rounded-xl p-3 mb-6"
+                whileHover={{ scale: 1.02 }}
+              >
+                <div className="flex justify-center gap-4">
+                  {project.technologies.map((tech) => (
+                    <motion.span
+                      key={tech}
+                      className="text-gray-600 font-medium"
+                      whileHover={{ scale: 1.1, color: "#374151" }}
+                    >
+                      {tech}
+                    </motion.span>
+                  ))}
+                </div>
+              </motion.div>
+
+              <motion.a
+                href={project.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full bg-gray-600 text-white rounded-lg py-3 text-lg font-medium hover:bg-gray-700 transition-colors text-center"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                Visitar Sitio
+              </motion.a>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
       <ModalMundiHuellas isOpen={isModalMundiHuellas} onClose={() => setIsModalMundiHuellas(false)} />
       <ModalCrmCobro isOpenCrm={isModalCrmCobro} onCloseCrm={() => setIsModalCrmCobro(false)} />
       <ModalHaulerPro isOpenHuaulerPro={isModalHaulerPro} onCloseHaulerPro={() => setIsModalHaulerPro(false)} />
-    </motion.div>
+    </div>
   );
 };
 
