@@ -20,16 +20,46 @@ export const Header = () => {
 
   const scrollToSection = (sectionId: string) => {
     setIsMenuOpen(false);
+    
+    // Función auxiliar para realizar scroll suave
+    const smoothScroll = (targetPosition: number) => {
+      const startPosition = window.pageYOffset;
+      const distance = targetPosition - startPosition;
+      const duration = 1000; // Duración en milisegundos (1 segundo)
+      let start: number | null = null;
+
+      const animation = (currentTime: number) => {
+        if (start === null) start = currentTime;
+        const timeElapsed = currentTime - start;
+        const progress = Math.min(timeElapsed / duration, 1);
+
+        // Función de easing para hacer el movimiento más suave
+        const easeInOutCubic = (t: number) => 
+          t < 0.5
+            ? 4 * t * t * t
+            : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+        window.scrollTo(0, startPosition + (distance * easeInOutCubic(progress)));
+
+        if (progress < 1) {
+          requestAnimationFrame(animation);
+        }
+      };
+
+      requestAnimationFrame(animation);
+    };
+
     if (sectionId === "inicio") {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      smoothScroll(0);
     } else {
       const section = document.getElementById(sectionId);
       if (section) {
-        section.scrollIntoView({ behavior: 'smooth' });
+        const targetPosition = section.getBoundingClientRect().top + window.pageYOffset;
+        smoothScroll(targetPosition);
       }
     }
   };
-
+  
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <motion.header
