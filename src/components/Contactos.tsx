@@ -151,17 +151,9 @@ export const Contactos = () => {
         </motion.div>
 
         {/* Footer  */}
-        <motion.div 
-          className="text-center max-w-2xl mx-auto"
-          variants={itemVariants}
-        >
-          <motion.div 
-            className="bg-white border border-gray-100 rounded-lg p-8"
-            whileHover={{ scale: 1.02 }}
-          >
-            <motion.p 
-              className="flex items-center justify-center text-xl text-gray-700 gap-3"
-            >
+        <motion.div className="text-center max-w-2xl mx-auto" variants={itemVariants}>
+          <motion.div className="bg-white border border-gray-100 rounded-lg p-8" whileHover={{ scale: 1.02 }}>
+            <motion.div className="flex items-center justify-center text-xl text-gray-700 gap-3">
               Espero ser parte de tu equipo de trabajo
               <motion.div
                 whileHover={{ rotate: 360 }}
@@ -169,7 +161,7 @@ export const Contactos = () => {
               >
                 <Briefcase size={28} className="text-gray-800 hover:text-amber-900" />
               </motion.div>
-            </motion.p>
+            </motion.div>
           </motion.div>
         </motion.div>
       </div>
