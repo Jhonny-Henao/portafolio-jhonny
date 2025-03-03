@@ -118,7 +118,7 @@ export const Hero = () => {
 
           {/* Título animado letra por letra */}
           <motion.h1 
-            className="text-4xl md:text-6xl lg:text-7xl font-bold text-center mb-8 text-gray-800"
+            className="text-5xl md:text-6xl lg:text-7xl font-bold text-center mb-8 text-gray-800"
             variants={textVariants}
           >
             {title.split('').map((char, index) => (
