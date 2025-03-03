@@ -69,7 +69,7 @@ export const Hero = () => {
   }))).current;
   
   return (
-    <div className="relative min-h-screen bg-gray-50 overflow-hidden mt-3">
+    <div className="relative min-h-screen bg-gray-50 overflow-hidden">
       {/* Elementos decorativos de fondo - solo renderizar del lado del cliente */}
       {isMounted && (
         <div className="absolute inset-0 opacity-10">
